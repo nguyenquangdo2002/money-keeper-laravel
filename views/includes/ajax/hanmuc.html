@@ -1,0 +1,86 @@
+<div class="modal-content">
+    <div class="modal-header">
+       <h4 class="modal-title">{{__('expenses.expense-form.update-title')}}</h4>
+    </div>
+       <form class="simcy-form" action="{{ url('Hanmuc@update') }}" data-parsley-validate method="POST" loader="true">
+        <div class="modal-body">            
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>{{__('hanmuc.income-form.label.title')}}</label>
+                        <input type="text" class="form-control" name="tenhanmuc" value="{{$hanmuc->tenhanmuc}}" placeholder="{{__('income.income-form.placeholder.title')}}" required="">
+                        <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                        <input type="hidden" name="hanmucid" value="{{$hanmuc->id}}" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>{{__('hanmuc.income-form.label.amount')}}</label>
+                        <span class="input-prefix">{{ currency() }}</span>
+                        <input type="number" class="form-control prefix"  step="0.01" data-parsley-pattern="^[0-9]*\.[0-9]{2}$" value="{{$hanmuc->sotienhanmuc}}" name="sotienhanmuc" min="0.01" placeholder="{{__('income.income-form.placeholder.amount')}}" required="">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                   <div class="col-md-12">
+                      <label>{{__('hanmuc.income-form.label.account')}}</label>
+                      <select class="form-control select2" name="account">
+                         <option value="0" @if($hanmuc->account == '0') selected @endif>
+                            {{__('expenses.expense-form.account.other')}}</option>
+                        @if(!empty($accounts))
+                        @foreach($accounts as $account)
+                         <option value="{{ $account->id }}" @if($hanmuc->account == $account->id) selected @endif>
+                            {{ $account->name }}</option>
+                        @endforeach
+                        @endif
+                      </select>
+                   </div>
+                </div>
+             </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-12 ">
+                        <label>{{__('hanmuc.income-form.label.category')}}</label>
+                        <select class="form-control select2" name="category">
+                            @if(!empty($categories))
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            @endif
+                            <option value="00">{{__('hanmuc.income-form.category.other')}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>{{__('hanmuc.income-form.label.start_date')}}</label>
+                        <input type="text" class="form-control datepicker" name="start_date" placeholder="{{__('income.income-form.placeholder.date')}}" required="">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>{{__('hanmuc.income-form.label.end_date')}}</label>
+                        <input type="text" class="form-control datepicker" name="end_date" placeholder="{{__('income.income-form.placeholder.date')}}" required="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">{{__('expenses.button.close')}}</button>
+    <button type="submit" class="btn btn-primary">{{__('expenses.button.update-expense')}}</button>
+    </div>
+    </form>
+ </div>
+ <script type="text/javascript">
+    $('.datepicker-dynamic').datepicker({
+           autoclose: true
+       });
+ </script>

@@ -1,0 +1,511 @@
+
+  <footer>
+    <div class="row">
+        <div class="col-md-12" >
+            <div class="col-md-3">
+                <h3 style="color: black;">GIỚI THIỆU</h3>
+                <ul>
+                    <li><a style="color: black;" href="#">Trung tâm trợ giúp</a></li>
+                    <li><a style="color: black;" href="#">Hướng dẫn sử dụng</a></li>
+                    <li><a style="color: black;" href="#">Chính sách bảo mật</a></li>
+                  </ul>
+            </div>
+            <div class="col-md-3">
+                <h3 style="color: black;">LIÊN HỆ</h3>
+                <ul>
+                    <li><a style="color: black;" href="#">Email: NerverGiveUp@gmail.com</a></li>
+                    <li><a style="color: black;" href="#">Hotline: 18081508</a></li>
+                    <li><a style="color: black;" href="#">Địa chỉ: 12 Nguyễn Văn Bảo, Phường 4, Quận Gò Vấp, Thành phố Hồ Chí Minh.</a></li>
+                  </ul>
+            </div>
+            <div class="col-md-3">
+                <h3 style="color: black;">THEO DÕI</h3>
+                <ul>
+                    <li><a style="color: black;" href="https://www.facebook.com/sviuh">Facebook: Never Give Up</a></li>
+                    <li><a style="color: black;" href="https://www.youtube.com/">Youtube: NeverGiveUp Offical</a></li>
+                    <li><a style="color: black;" href="https://www.instagram.com/">Instargam: Never Give Up</a></li>
+                  </ul>
+            </div>
+            <div class="col-md-3">
+                <h3 style="color: black;">TẢI ỨNG DỤNG</h3>
+                <ul>
+                    <li><a style="color: black;" href="#">Ứng dụng cho iOS</a></li>
+                    <li><a style="color: black;" href="#">Ứng dụng cho Android</a></li>
+                    <li><a style="color: black;" href="#">Ứng dụng cho Windows</a></li>
+                    <li style="list-style: none;"><img src="https://down-vn.img.susercontent.com/file/a5e589e8e118e937dc660f224b9a1472" alt=""></li>
+                  </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="footer-logo">
+      <!-- <img src="{{ asset('uploads/app/'.env('APP_LOGO')) }}" class="img-responsive"> -->
+    </div>
+    <p class="text-right pull-right">&copy; {{ date("Y") }} {{ env("APP_NAME") }} <span>•</span> {{__('pages.footer')}}</p>
+  </footer>
+
+
+<!-- add income -->
+    <div class="modal fade" id="addIncome" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{__('income.income-form.add-title')}}</h4>
+                </div>
+                    <div class="modal-body">
+                        <p>{{__('income.income-form.add-intro')}}</p>
+                        <form class="simcy-form" action="{{ url('Income@add') }}" data-parsley-validate="" method="POST" loader="true">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('income.income-form.label.title')}}</label>
+                                    <input type="text" class="form-control" name="title" placeholder="{{__('income.income-form.placeholder.title')}}" required="">
+                                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('income.income-form.label.amount')}}</label>
+                                    <span class="input-prefix">{{ currency() }}</span>
+                                    <input type="number" class="form-control prefix"  step="0.01" data-parsley-pattern="^[0-9]*\.[0-9]{2}$" name="amount" min="0.01" placeholder="{{__('income.income-form.placeholder.amount')}}" required="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('income.income-form.label.account')}}</label>
+                                    <select class="form-control select2" name="account">
+                                        <option value="00">{{__('income.income-form.account.other')}}</option>
+                                      @if(!empty($accounts))
+                                      @foreach($accounts as $account)
+                                        <option value="{{ $account->id }}">{{ $account->name }}</option>
+                                      @endforeach
+                                      @endif
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('danhba.danhba-form.label.danhba')}}</label>
+                                    <input type="text" class="form-control" name="danhba" placeholder="{{__('danhba.danhba-form.placeholder.danhbathu')}}" >
+                                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12 ">
+                                    <label>{{__('income.income-form.label.category')}}</label>
+                                    <select class="form-control select2" name="category">
+                                        @if(!empty($incomecategories))
+                                            @foreach($incomecategories as $incomecategory)
+                                                <option value="{{ $incomecategory->id }}">{{ $incomecategory->name }}</option>
+                                            @endforeach
+                                        @endif
+                                        <option value="00">
+                                            {{__('income.income-form.group.other')}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('income.income-form.label.date')}}</label>
+                                    <input type="text" class="form-control datepicker" name="income_date" placeholder="{{__('income.income-form.placeholder.date')}}" required="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">{{__('income.button.close')}}</button>
+                        <button type="submit" class="btn btn-primary">{{__('income.button.add-income')}}</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!--Record Expense-->
+    <div class="modal fade" id="addExpense" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{__('expenses.expense-form.add-title')}}</h4>
+                </div>
+                <form class="simcy-form" action="{{ url('Expenses@add') }}" data-parsley-validate="" loader="true" method="POST" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <p>{{__('expenses.expense-form.add-intro')}}</p>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('expenses.expense-form.label.title')}}</label>
+                                    <input type="text" class="form-control" name="title" placeholder="{{__('expenses.expense-form.placeholder.title')}}" required="">
+                                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('expenses.expense-form.label.amount')}}</label>
+                                    <span class="input-prefix">{{ currency() }}</span>
+                                    <input type="number" class="form-control prefix"  step="0.01" data-parsley-pattern="^[0-9]*\.[0-9]{2}$" min="0.01" name="amount" placeholder="{{__('expenses.expense-form.placeholder.amount')}}" required="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('expenses.expense-form.label.account')}}</label>
+                                    <select class="form-control select2" name="account">
+                                        <option value="00">{{__('expenses.expense-form.account.other')}}</option>
+                                      @if(!empty($accounts))
+                                      @foreach($accounts as $account)
+                                        <option value="{{ $account->id }}">{{ $account->name }}</option>
+                                      @endforeach
+                                      @endif
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('danhba.danhba-form.label.danhba')}}</label>
+                                    <input type="text" class="form-control" name="danhba" placeholder="{{__('danhba.danhba-form.placeholder.danhbachi')}}" >
+                                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-12 ">
+                                        <label>{{__('expenses.expense-form.label.category')}}</label>
+                                        <select class="form-control select2" name="category">
+                                            @if(!empty($categories))
+                                                @foreach($categories as $category)
+                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                                @endforeach
+                                            @endif
+                                            <option value="00">{{__('expenses.expense-form.category.other')}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('expenses.expense-form.label.date')}}</label>
+                                    <input type="text" class="form-control datepicker" name="expense_date" placeholder="{{__('expenses.expense-form.placeholder.date')}}" required="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">{{__('expenses.button.close')}}</button>
+                        <button type="submit" class="btn btn-primary">{{__('expenses.button.save-expense')}}</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- modal han muc -->
+    <div class="modal fade" id="addHanmuc" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{__('hanmuc.income-form.add-title')}}</h4>
+                </div>
+                    <div class="modal-body">
+                        <p>{{__('hanmuc.income-form.add-intro')}}</p>
+                        <form class="simcy-form" action="{{ url('sotietkiem@addHanmuc') }}" data-parsley-validate="" method="POST" loader="true">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('hanmuc.income-form.label.title')}}</label>
+                                    <input type="text" class="form-control" name="tenhanmuc" placeholder="{{__('income.income-form.placeholder.title')}}" required="">
+                                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('hanmuc.income-form.label.amount')}}</label>
+                                    <span class="input-prefix">{{ currency() }}</span>
+                                    <input type="number" class="form-control prefix"  step="0.01" data-parsley-pattern="^[0-9]*\.[0-9]{2}$" name="sotienhanmuc" min="0.01" placeholder="{{__('income.income-form.placeholder.amount')}}" required="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('hanmuc.income-form.label.account')}}</label>
+                                    <select class="form-control select2" name="account">
+                                        <option value="00">{{__('income.income-form.account.other')}}</option>
+                                      @if(!empty($accounts))
+                                      @foreach($accounts as $account)
+                                        <option value="{{ $account->id }}">{{ $account->name }}</option>
+                                      @endforeach
+                                      @endif
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12 ">
+                                    <label>{{__('hanmuc.income-form.label.category')}}</label>
+                                    <select class="form-control select2" name="category">
+                                        @if(!empty($categories))
+                                            @foreach($categories as $category)
+                                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                            @endforeach
+                                        @endif
+                                        <option value="00">{{__('hanmuc.income-form.category.other')}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('hanmuc.income-form.label.start_date')}}</label>
+                                    <input type="text" class="form-control datepicker" name="start_date" placeholder="{{__('income.income-form.placeholder.date')}}" required="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('hanmuc.income-form.label.end_date')}}</label>
+                                    <input type="text" class="form-control datepicker" name="end_date" placeholder="{{__('income.income-form.placeholder.date')}}" required="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">{{__('hanmuc.button.close')}}</button>
+                        <button type="submit" class="btn btn-primary">{{__('hanmuc.button.add-income')}}</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal sổ tiết kiệm -->
+    <div class="modal fade" id="addSotietkiem1" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{__('sotietkiem1.income-form.add-title')}}</h4>
+                </div>
+                    <div class="modal-body">
+                        <p>{{__('sotietkiem1.income-form.add-intro')}}</p>
+                        <form class="simcy-form" action="{{ url('sotietkiem1@addSotietkiem1') }}" data-parsley-validate="" method="POST" loader="true">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('sotietkiem1.income-form.label.title')}}</label>
+                                    <input type="text" class="form-control" name="tensotietkiem" placeholder="{{__('income.income-form.placeholder.title')}}" required="">
+                                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('sotietkiem1.income-form.label.amount')}}</label>
+                                    <span class="input-prefix">{{ currency() }}</span>
+                                    <input type="number" class="form-control prefix"  step="0.01" data-parsley-pattern="^[0-9]*\.[0-9]{2}$" name="sodubandau" min="0.01" placeholder="{{__('income.income-form.placeholder.amount')}}" required="">
+
+                                </div>  
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('sotietkiem1.income-form.label.type_money')}}</label>
+                                    <input type="text" class="form-control" name="loaitiente" placeholder="VND" required="">
+                                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('sotietkiem1.income-form.label.bank')}}</label>
+                                    <input type="text" class="form-control" name="nganhang" placeholder="Agribank" required="">
+                                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('sotietkiem1.income-form.label.start_date')}}</label>
+                                    <input type="text" class="form-control datepicker" name="ngaygui" placeholder="{{__('income.income-form.placeholder.date')}}" required="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('sotietkiem1.income-form.label.kyhan')}}</label>
+                                    <select class="form-control select2" name="kyhan">
+                                      <!-- @if(!empty($accounts))
+                                      @foreach($accounts as $account)
+                                        <option value="{{ $account->id }}">{{ $account->name }}</option>
+                                      @endforeach
+                                      @endif -->
+                                      <option value="01">1 Tuần</option>
+                                      <option value="02">2 Tuần</option>
+                                      <option value="03">3 Tuần</option>
+                                      <option value="04">1 Tháng</option>
+                                      <option value="05">3 Tháng</option>
+                                      <option value="06">6 Tháng</option>
+                                      <option value="07">12 Tháng</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+    <div class="col-md-12">
+        <label>{{__('sotietkiem1.income-form.label.laisuat')}}</label>
+        <input type="text" class="form-control" name="laisuat" id="laisuat" placeholder="0 %/năm" required="">
+        <span id="error-message-laisuat" style="color: red;"></span>
+        <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+    </div>
+</div>
+<script>
+    document.querySelector('#laisuat').addEventListener('blur', function(e) {
+    let inputValue = parseFloat(e.target.value);
+
+    if (isNaN(inputValue) || inputValue <= 0) {
+        document.querySelector('#error-message-laisuat').innerText = 'Lãi suất phải lớn hơn 0';
+        e.target.value = ''; // Xóa giá trị nếu không hợp lệ
+    } else {
+        document.querySelector('#error-message-laisuat').innerText = '';
+    }
+});
+
+</script>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('sotietkiem1.income-form.label.laisuatkhongkyhan')}}</label>
+                                    <input type="text" class="form-control" name="laisuatkhongkyhan" placeholder="0.05 %/năm" required="">
+                                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+    <div class="col-md-12">
+        <label>{{__('sotietkiem1.income-form.label.songaytinhlaitrennam')}}</label>
+        <input type="text" class="form-control" name="songaytinhlaitrennam" id="songaytinhlaitrennam" placeholder="365 ngày" required="">
+        <span id="error-message" style="color: red;"></span>
+        <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+    </div>
+</div>
+<script>document.querySelector('#songaytinhlaitrennam').addEventListener('blur', function(e) {
+    let inputValue = parseInt(e.target.value);
+
+    if (isNaN(inputValue) || inputValue <= 0) {
+        document.querySelector('#error-message').innerText = 'Số ngày tính lãi phải lớn hơn 0';
+        e.target.value = ''; // Xóa giá trị nếu không hợp lệ
+    } else {
+        document.querySelector('#error-message').innerText = '';
+    }
+});
+</script>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('sotietkiem1.income-form.label.tralai')}}</label>
+                                    <select class="form-control select2" name="tralai">
+                                        <!-- <option value="00">{{__('income.income-form.account.other')}}</option> -->
+                                      <!-- @if(!empty($accounts))
+                                      @foreach($accounts as $account)
+                                        <option value="{{ $account->id }}">{{ $account->name }}</option>
+                                      @endforeach
+                                      @endif -->
+                                      <option value="01">Đầu kỳ</option>
+                                      <option value="02">Cuối kỳ</option>
+                                      <option value="03">Định kỳ hàng tháng</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('sotietkiem1.income-form.label.khidenhan')}}</label>
+                                    <select class="form-control select2" name="khidenhan">
+                                        <!-- <option value="00">{{__('income.income-form.account.other')}}</option> -->
+                                      <!-- @if(!empty($accounts))
+                                      @foreach($accounts as $account)
+                                        <option value="{{ $account->id }}">{{ $account->name }}</option>
+                                      @endforeach
+                                      @endif -->
+                                      <option value="01">Tái tục gốc và lãi</option>
+                                      <option value="02">Tái tục gốc</option>
+                                      <option value="03">Tất toán sổ</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('sotietkiem1.income-form.label.account')}}</label>
+                                    <select class="form-control select2" name="account">
+                                        <option value="00">{{__('income.income-form.account.other')}}</option>
+                                      @if(!empty($accounts))
+                                      @foreach($accounts as $account)
+                                        <option value="{{ $account->id }}">{{ $account->name }}</option>
+                                      @endforeach
+                                      @endif
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('sotietkiem1.income-form.label.diendai')}}</label>
+                                    <input type="text" class="form-control" name="diengiai" placeholder="{{__('income.income-form.placeholder.title')}}" >
+                                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">{{__('sotietkiem1.button.close')}}</button>
+                        <button type="submit" class="btn btn-primary">{{__('sotietkiem1.button.add-income')}}</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>

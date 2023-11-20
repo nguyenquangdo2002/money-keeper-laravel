@@ -1,0 +1,278 @@
+@include('includes/header')
+<body>
+@include('includes/navbar')
+<!-- Main content -->
+<div class="container">
+    <div class="page-heading">
+            <button class="btn btn-primary pull-right ml-5" type="button" data-toggle="modal" data-target="#create">
+                <span><i class="mdi mdi-plus-circle-outline"></i></span>
+                {{__('settings.button.add-category')}}
+            </button>
+        <div class="heading-content">
+            <div class="user-image">
+                @if(empty($user->avatar))
+                <img src="{{ asset('assets/images/avatar.png') }}" class="img-circle img-responsive">
+                @else
+                <img src="{{ asset('uploads/avatar/'.$user->avatar) }}" class="img-circle img-responsive">
+                @endif
+            </div>
+            
+            <div class="heading-title">
+    <h2>{{__('settings.heading.welcome')}}, {{$user->fname}} {{$user->lname}}</h2>
+    <p>{{__('settings.heading.intro')}}</p>
+                
+</div>
+
+            
+        </div>
+        
+    </div>
+
+    <div class="row">
+        
+        <div class="col-md-12">
+            
+            <div class="card">
+                
+              <div class="card-body p-zero">
+                
+                        <div class="tab-content settings">
+                            <div class="row">
+                                <div class="col-md-12">
+                                  <div id="categories" class="tab-pane fade in active">
+                                    <h3>{{__('settings.category-table.title')}}</h3>
+                                    <p class="text-muted text-thin">{{__('settings.category-table.intro')}}</p>
+                                    <table class="table">
+                                      <thead>
+                                        <tr>
+                                          <th class="text-center">{{__('settings.category-table.number')}}</th>
+                                          <th>{{__('settings.category-table.category-name')}}</th>
+                                          <th></th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        @if(!empty($categories))
+                                           @foreach($categories as $key => $category)
+                                            <tr>
+                                            <td class="text-center"><label class="badge">{{ $key + 1}}</label></td>
+                                            <td><strong>{{ $category->name }}</strong><br>
+                                                @if( $category->type == "Income" )
+                                                    {{  __('pages.options.income') }}
+                                                @else
+                                                    {{   __('pages.options.expense') }}
+                                                @endif
+                                            </td>
+                                            <td class="text-right">
+                                            <div class="dropdown">
+                                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{__('settings.category-table.actions')}} <span class="caret"></span> </button>
+                                                <ul class="dropdown-menu">
+                                                    <li role="presentation"><a role="menuitem" class="fetch-display-click" href="" url="{{ url('Settings@updatecategoryview') }}" data="csrf-token:{{ csrf_token()}}|categoryid:{{ $category->id }}" holder=".update-form" modal="#update"> <i class="mdi mdi-pencil"></i> {{__('settings.category-table.edit')}}</a></li>
+                                                    <li role="presentation"><a role="menuitem" data="categoryid:{{ $category->id }}|csrf-token:{{csrf_token()}}" href="" url="{{ url('Settings@deletecategory') }}" class="send-to-server-click" warning-title="{{__('settings.messages.are-you-sure')}}" warning-message="{{__('settings.messages.delete-category')}}" warning-button="{{__('settings.messages.proceed')}}"> <i class="mdi mdi-delete"></i> {{__('settings.category-table.delete')}}</a></li>
+                                                </ul>
+                                            </div>
+                                            </td>
+                                            </tr>
+                                           @endforeach
+                                        @else
+                                        <tr class="text-center"><td colspan="3">{{__('settings.category-table.empty')}}</td></tr>
+                                        @endif
+                                      </tbody>
+                                    </table>
+                                    
+                                  </div>
+                                  <div id="system" class="tab-pane fade">
+                                    <h3>{{__('settings.system-form.title')}}</h3>
+                                    <p class="text-muted text-thin">{{__('settings.system-form.intro')}}</p>
+
+                                    <form class="simcy-form" action="{{ url('Settings@updatesystem')}}" data-parsley-validate="" loader="true" method="POST" enctype="multipart/form-data">
+                                        <input type="hidden" value="{{ csrf_token() }}" name="csrf-token">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>{{__('settings.system-form.label.name')}}</label>
+                                                    <input type="text" class="form-control system-name" placeholder="System name" name="APP_NAME" value="{{ env('APP_NAME') }}" required>
+                                                    <input type="hidden" name="csrf-token" value="{{ csrf_token() }}" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>{{__('settings.system-form.label.logo')}}</label>
+                                                    <input type="file" name="APP_LOGO" class="croppie" default="{{ asset('uploads/app/'.env('APP_LOGO')) }}" crop-width="326" crop-height="78" accept="image/*">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>{{__('settings.system-form.label.favicon')}}</label>
+                                                    <input type="file" name="APP_ICON" class="croppie" default="{{ asset('uploads/app/'.env('APP_ICON')) }}" crop-width="66" crop-height="66" accept="image/*">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="divider"></div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>{{__('settings.system-form.label.smtp-user')}}</label>
+                                                    <input type="text" class="form-control" name="MAIL_USERNAME" placeholder="{{__('settings.system-form.label.smtp-user')}}" value="{{ env('MAIL_USERNAME') }}" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>{{__('settings.system-form.label.smtp-sender')}}</label>
+                                                    <input type="email" class="form-control" name="MAIL_FROM" placeholder="SMTP Sender" value="{{ (env('MAIL_FROM') != '' ? env('MAIL_FROM') : env('MAIL_USERNAME')); }}" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>{{__('settings.system-form.label.smtp-host')}}</label>
+                                                    <input type="text" class="form-control" placeholder="{{__('settings.system-form.label.smtp-host')}}" name="SMTP_HOST" value="{{ env('SMTP_HOST') }}" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>{{__('settings.system-form.label.smtp-port')}}</label>
+                                                    <input type="text" class="form-control" placeholder="{{__('settings.system-form.label.smtp-port')}} name="SMTP_PORT" value="{{ env('SMTP_PORT') }}" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>{{__('settings.system-form.label.smtp-password')}}</label>
+                                                    <input type="password" class="form-control" placeholder="{{__('settings.system-form.label.smtp-password')}}" name="SMTP_PASSWORD" value="{{ env('SMTP_PASSWORD') }}" autocomplete="false" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>{{__('settings.system-form.label.smtp-encryption')}}</label>
+                                                    <input type="text" class="form-control" placeholder="{{__('settings.system-form.label.smtp-encryption')}}" name="MAIL_ENCRYPTION" value="{{ env('MAIL_ENCRYPTION'); }}" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>
+                                                    @if ( env('SMTP_AUTH') == "Enabled" ) 
+                                                    <input type="checkbox" class="switch" name="SMTP_AUTH" value="true" checked />
+                                                    @else
+                                                    <input type="checkbox" class="switch" name="SMTP_AUTH" value="true" />
+                                                    @endif
+                                                    {{__('settings.system-form.label.smtp-auth')}}</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="divider"></div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>
+                                                    @if ( env('NEW_ACCOUNTS') == "Enabled" ) 
+                                                    <input type="checkbox" class="switch" name="NEW_ACCOUNTS" value="Enabled" checked />
+                                                    @else
+                                                    <input type="checkbox" class="switch" name="NEW_ACCOUNTS" value="Enabled" />
+                                                    @endif
+                                                    {{__('settings.system-form.label.allow-signup')}}</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-12 text-right">
+                                                    @if ( env('APP_ENV') == "demo" )
+                                                        <button class="btn btn-primary" type="submit" disabled>{{__('settings.button.save')}}</button>
+                                                    @else
+                                                        <button class="btn btn-primary" type="submit">{{__('settings.button.save')}}</button>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                  </div>
+                                  
+                                </div>
+                            </div>
+                        </div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+
+  <!-- footer -->
+
+</div>
+  @include('includes/footer')
+    <!--Record Income-->
+    <div class="modal fade" id="update" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <!-- Modal content-->
+        <div class="update-form"></div>
+    </div>
+    </div>
+
+    <!--Record Income-->
+    <div class="modal fade" id="create" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{__('settings.category-form.add-title')}}  </h4>
+                </div>
+                <form class="simcy-form" action="{{ url('Settings@addcategory')}}" data-parsley-validate="" loader="true" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf-token" value="{{ csrf_token() }}">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12 ">
+                                    <label>{{__('settings.category-form.label.name')}}</label>
+                                    <input type="text" class="form-control" name="category" placeholder="{{__('settings.category-form.placeholder.name')}}" data-parsley-required="true">
+                                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 ">
+                                    <label>{{__('settings.category-form.label.type')}}</label>
+                                    <select class="form-control select2" name="type">
+                                        <option value="Income" @if($category->type == 'Income') selected @endif>
+                                           {{__('pages.options.income')}}</option>
+                                        <option value="Expense" @if($category->type == 'Expense') selected @endif>
+                                           {{__('pages.options.expense')}}</option>
+                                        </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">{{__('settings.button.close')}}</button>
+                        <button type="submit" class="btn btn-primary">{{__('settings.button.add-category')}}</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- scripts -->
+    <script src="{{ url('') }}lang/{{env('APP_LOCALE_DEFAULT')}}/simcify-lang2.js"></script> <!-- js language translation -->
+    <script src="{{asset('assets/js/jquery-3.2.1.min.js')}}"></script>
+    <script src="{{asset('assets/libs/bootstrap/js/bootstrap.min.js')}}"></script>
+    <script src="{{asset('assets/js/jquery.slimscroll.min.js')}}"></script>
+    <script src="{{asset('assets/js/simcify.min.js')}}"></script>
+    <!-- custom scripts -->
+    <script src="{{asset('assets/js/app.js')}}"></script>
+    <script src="{{ url('') }}lang/{{env('APP_LOCALE_DEFAULT')}}/lang2.js"></script> <!-- js language translation -->
+</body>
+</html>

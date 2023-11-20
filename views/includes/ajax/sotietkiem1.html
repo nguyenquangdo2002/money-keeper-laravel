@@ -1,0 +1,256 @@
+<div class="modal-content">
+    <div class="modal-header">
+       <h4 class="modal-title">{{__('sotietkiem1.income-form.update-title')}}</h4>
+    </div>
+       <form class="simcy-form" action="{{ url('sotietkiem1@update') }}" data-parsley-validate method="POST" loader="true">
+    <div class="modal-body">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label>{{__('sotietkiem1.income-form.label.title')}}</label>
+                    <input type="text" class="form-control" name="tensotietkiem" value="{{$sotietkiem->tensotietkiem}}" placeholder="{{__('income.income-form.placeholder.title')}}" required="">
+                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                    <input type="hidden" name="sotietkiemid" value="{{$sotietkiem->id}}" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label>{{__('sotietkiem1.income-form.label.amount')}}</label>
+                    <span class="input-prefix">{{ currency() }}</span>
+                    <input type="number" class="form-control prefix" value="{{$sotietkiem->sodubandau}}"  step="0.01" data-parsley-pattern="^[0-9]*\.[0-9]{2}$" name="sodubandau" min="0.01" placeholder="{{__('income.income-form.placeholder.amount')}}" required="">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label>{{__('sotietkiem1.income-form.label.type_money')}}</label>
+                    <input type="text" class="form-control" name="loaitiente" value="{{$sotietkiem->loaitiente}}" placeholder="VND" required="">
+                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label>{{__('sotietkiem1.income-form.label.bank')}}</label>
+                    <input type="text" class="form-control" name="nganhang" placeholder="Agribank" value="{{$sotietkiem->nganhang}}" required="">
+                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label>{{__('sotietkiem1.income-form.label.start_date')}}</label>
+                    <input type="text" class="form-control datepicker" name="ngaygui" value="{{$sotietkiem->ngaygui}}" placeholder="{{__('income.income-form.placeholder.date')}}" required="">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label>{{__('sotietkiem1.income-form.label.kyhan')}}</label>
+                    <select class="form-control select2" name="kyhan" value="{{$sotietkiem->kyhan}}">
+                      <!-- @if(!empty($accounts))
+                      @foreach($accounts as $account)
+                        <option value="{{ $account->id }}">{{ $account->name }}</option>
+                      @endforeach
+                      @endif -->
+                      @if($sotietkiem->kyhan == 01)
+                      <option class="hidden" value="01">1 Tuần</option>
+                      <option value="01">1 Tuần</option>
+                      <option value="02">2 Tuần</option>
+                      <option value="03">3 Tuần</option>
+                      <option value="04">1 Tháng</option>
+                      <option value="05">3 Tháng</option>
+                      <option value="06">6 Tháng</option>
+                      <option value="07">12 Tháng</option>
+                      @elseif($sotietkiem->kyhan == 02)
+                      <option class="hidden" value="02">2 Tuần</option>
+                      <option value="01">1 Tuần</option>
+                      <option value="02">2 Tuần</option>
+                      <option value="03">3 Tuần</option>
+                      <option value="04">1 Tháng</option>
+                      <option value="05">3 Tháng</option>
+                      <option value="06">6 Tháng</option>
+                      <option value="07">12 Tháng</option>
+                      @elseif($sotietkiem->kyhan == 03)
+                      <option class="hidden" value="03">3 Tuần</option>
+                      <option value="01">1 Tuần</option>
+                      <option value="02">2 Tuần</option>
+                      <option value="03">3 Tuần</option>
+                      <option value="04">1 Tháng</option>
+                      <option value="05">3 Tháng</option>
+                      <option value="06">6 Tháng</option>
+                      <option value="07">12 Tháng</option>
+                      @elseif($sotietkiem->kyhan == 04)
+                      <option class="hidden" value="04">1 Tháng</option>
+                      <option value="01">1 Tuần</option>
+                      <option value="02">2 Tuần</option>
+                      <option value="03">3 Tuần</option>
+                      <option value="04">1 Tháng</option>
+                      <option value="05">3 Tháng</option>
+                      <option value="06">6 Tháng</option>
+                      <option value="07">12 Tháng</option>
+                      @elseif($sotietkiem->kyhan == 05)
+                      <option class="hidden" value="05">3 Tháng</option>
+                      <option value="01">1 Tuần</option>
+                      <option value="02">2 Tuần</option>
+                      <option value="03">3 Tuần</option>
+                      <option value="04">1 Tháng</option>
+                      <option value="05">3 Tháng</option>
+                      <option value="06">6 Tháng</option>
+                      <option value="07">12 Tháng</option>
+                      @elseif($sotietkiem->kyhan == 06)
+                      <option class="hidden" value="06">6 Tháng</option>>
+                      <option value="01">1 Tuần</option>
+                      <option value="02">2 Tuần</option>
+                      <option value="03">3 Tuần</option>
+                      <option value="04">1 Tháng</option>
+                      <option value="05">3 Tháng</option>
+                      <option value="06">6 Tháng</option>
+                      <option value="07">12 Tháng</option>
+                      @elseif($sotietkiem->kyhan == 07)
+                      <option class="hidden" value="07">12 Tháng</option>
+                      <option value="01">1 Tuần</option>
+                      <option value="02">2 Tuần</option>
+                      <option value="03">3 Tuần</option>
+                      <option value="04">1 Tháng</option>
+                      <option value="05">3 Tháng</option>
+                      <option value="06">6 Tháng</option>
+                      <option value="07">12 Tháng</option>
+                      @endif
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label>{{__('sotietkiem1.income-form.label.laisuat')}}</label>
+                    <input type="text" class="form-control" name="laisuat" value="{{$sotietkiem->laisuat}}" placeholder="0 %/năm" required="">
+                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label>{{__('sotietkiem1.income-form.label.laisuatkhongkyhan')}}</label>
+                    <input type="text" class="form-control" name="laisuatkhongkyhan" value="{{$sotietkiem->laisuatkhongkyhan}}" placeholder="0.05 %/năm" required="">
+                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label>{{__('sotietkiem1.income-form.label.songaytinhlaitrennam')}}</label>
+                    <input type="text" class="form-control" name="songaytinhlaitrennam" value="{{$sotietkiem->songaytinhlaitrennam}}" placeholder="365 ngày" required="">
+                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label>{{__('sotietkiem1.income-form.label.tralai')}}</label>
+                    <select class="form-control select2" name="tralai" value="{{$sotietkiem->tralai}}">
+                        <!-- <option value="00">{{__('income.income-form.account.other')}}</option> -->
+                      <!-- @if(!empty($accounts))
+                      @foreach($accounts as $account)
+                        <option value="{{ $account->id }}">{{ $account->name }}</option>
+                      @endforeach
+                      @endif -->
+                      @if($sotietkiem->tralai == 01)
+                      <option class="hidden" value="01">Đầu kỳ</option>
+                      <option value="01">Đầu kỳ</option>
+                      <option value="02">Cuối kỳ</option>
+                      <option value="03">Định kỳ hàng tháng</option>
+                      @elseif($sotietkiem->tralai == 02)
+                      <option class="hidden" value="02">Cuối kỳ</option>
+                      <option value="01">Đầu kỳ</option>
+                      <option value="02">Cuối kỳ</option>
+                      <option value="03">Định kỳ hàng tháng</option>
+                      @elseif($sotietkiem->tralai == 03)
+                      <option class="hidden" value="03">Định kỳ hàng tháng</option>
+                      <option value="01">Đầu kỳ</option>
+                      <option value="02">Cuối kỳ</option>
+                      <option value="03">Định kỳ hàng tháng</option>
+                      @endif
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label>{{__('sotietkiem1.income-form.label.khidenhan')}}</label>
+                    <select class="form-control select2" name="khidenhan" value="{{$sotietkiem->khidenhan}}">
+                        <!-- <option value="00">{{__('income.income-form.account.other')}}</option> -->
+                      <!-- @if(!empty($accounts))
+                      @foreach($accounts as $account)
+                        <option value="{{ $account->id }}">{{ $account->name }}</option>
+                      @endforeach
+                      @endif -->
+                      @if($sotietkiem->khidenhan == 01)
+                      <option class="hidden" value="01">Tái tục gốc và lãi</option>
+                      <option value="01">Tái tục gốc và lãi</option>
+                      <option value="02">Tái tục gốc</option>
+                      <option value="03">Tất toán sổ</option>
+                      @elseif($sotietkiem->khidenhan == 02)
+                      <option class="hidden" value="02">Tái tục gốc</option>
+                      <option value="01">Tái tục gốc và lãi</option>
+                      <option value="02">Tái tục gốc</option>
+                      <option value="03">Tất toán sổ</option>
+                      @elseif($sotietkiem->khidenhan == 03)
+                      <option class="hidden" value="03">Tất toán sổ</option>
+                      <option value="01">Tái tục gốc và lãi</option>
+                      <option value="02">Tái tục gốc</option>
+                      <option value="03">Tất toán sổ</option>
+                      @endif
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+               <div class="col-md-12">
+                  <label>{{__('sotietkiem1.income-form.label.account')}}</label>
+                  <select class="form-control select2" name="account">
+                     <option value="0" @if($sotietkiem->account == '0') selected @endif>
+                        {{__('expenses.expense-form.account.other')}}</option>
+                    @if(!empty($accounts))
+                    @foreach($accounts as $account)
+                     <option value="{{ $account->id }}" @if($sotietkiem->account == $account->id) selected @endif>
+                        {{ $account->name }}</option>
+                    @endforeach
+                    @endif
+                  </select>
+               </div>
+            </div>
+         </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label>{{__('sotietkiem1.income-form.label.diendai')}}</label>
+                    <input type="text" class="form-control" name="diengiai" value="{{$sotietkiem->diengiai}}" placeholder="{{__('income.income-form.placeholder.title')}}" >
+                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                </div>
+            </div>
+        </div>
+    <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">{{__('expenses.button.close')}}</button>
+    <button type="submit" class="btn btn-primary">{{__('sotietkiem1.button.update-income')}}</button>
+    </div>
+    </form>
+ </div>
+ <script type="text/javascript">
+    $('.datepicker-dynamic').datepicker({
+           autoclose: true
+       });
+ </script>
+ 

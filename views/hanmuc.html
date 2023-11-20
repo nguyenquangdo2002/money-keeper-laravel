@@ -1,0 +1,169 @@
+@include('includes/header')
+<body>
+@include('includes/navbar')
+<!-- Main content -->
+<div class="container">
+    <div class="page-heading">
+            <button class="btn btn-primary pull-right ml-5" type="button" data-toggle="modal" data-target="#addHanmuc"><span><i class="mdi mdi-plus-circle-outline"></i></span> {{__('hanmuc.button.add-income')}} </button>
+        <div class="heading-content">
+            <div class="user-image">
+                @if(empty($user->avatar))
+                <img src="{{ asset('assets/images/avatar.png') }}" class="img-circle img-responsive">
+                @else
+                <img src="{{ asset('uploads/avatar/'.$user->avatar) }}" class="img-circle img-responsive">
+                @endif
+            </div>
+            <div class="heading-title">
+                <h2>{{__('income.heading.welcome')}}, {{$user->fname}} {{$user->lname}}</h2>
+                <p>{{__('income.heading.intro')}}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h4>{{__('hanmuc.income-table.income-records')}}</h4>
+              </div>
+              <div class="card-body">
+                  <div class="table-responsive longer">
+                      <table class="table display">
+                          <thead>
+                              <tr>
+                                <th width="2%"></th>
+                                  <th width="20%">{{__('hanmuc.income-table.name')}}</th>
+                                  <th>{{__('hanmuc.income-table.amount-use')}}</th>
+                                  <th>{{__('hanmuc.income-table.amount')}}</th>
+                                  <th>{{__('hanmuc.income-table.start_date')}}</th>
+                                  <th>{{__('hanmuc.income-table.end_date')}}</th>
+                                  <th>{{__('budget.budget-table.transactions')}}</th>
+                                  <th></th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                            @if(count($hanmucs) > 0)
+                            @foreach($hanmucs as $key => $hm) 
+                              <tr>
+                                <td><span class="badge badge-success">{{ $key + 1 }}</span></td>
+                                <td><strong>{{$hm->tenhanmuc}}</strong><br/>
+                                @if(empty($hm->account))
+                                <span class="text-danger">{{__('expenses.expense-table.other')}}<br/></span>
+                                @else
+                                <span class="text-danger">{{ $hm->name}}<br/></span>
+                                @endif
+                                @if(empty($hm->name))
+                                <span>{{__('expenses.expense-table.other')}}<br/></span>
+                                @else
+                                <span>{{ $hm->hanmuc}}<br/></span>
+                                @endif
+                                </td>
+                                  <td>{{money($hanmuc->spent)}}</td><!--Thêm hàm tính số tiền sử dụng-->
+                                  <td><strong>{{money($result)}}</strong></td>
+                                  <td><span>{{date('M d, Y', strtotime($hanmuc->start_date))}}</span></td>
+                                  <td><span>{{date('M d, Y', strtotime($hanmuc->end_date))}}</span></td>
+                                  <td>
+                                    <div>
+                                    <strong class="pull-right">{{money($hanmuc->sotienhanmuc-100000)}} / {{ money($hanmuc->sotienhanmuc) }}</strong>
+                                    <span>{{__('budget.budget-table.progress')}}</span>
+                                    <div class="progress progress-bar-success-alt">
+                                        <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="{{ $hanmuc->sotienhanmuc-100000 }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ $hanmuc->sotienhanmuc-100000 }}%">
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                                  
+                                  <td>
+                                      <div class="dropdown">
+                                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{__('expenses.expense-table.actions')}} <span class="caret"></span> </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="c-dropdown__item dropdown-item fetch-display-click" url="{{url('sotietkiem@updateview')}}" data="csrf-token:{{csrf_token()}}|hanmucid:{{$hanmuc->id}}" holder=".update-form" modal="#update" href=""><i class="mdi mdi-pencil"></i> {{__('expenses.expense-table.edit')}}</a></li>
+                                            <li><a class="send-to-server-click" data="csrf-token:{{csrf_token()}}|hanmucid:{{$hanmuc->id}}" url="{{ url('sotietkiem@delete') }}" warning-title="{{__('expenses.messages.are-you-sure')}}" warning-message="{{__('expenses.messages.delete')}}" warning-button="{{__('expenses.messages.continue')}}" loader="true"><i class="mdi mdi-delete"></i> {{__('expenses.expense-table.delete')}}</a></li>
+                                        </ul>
+                                      </div>
+                                  </td>
+                              </tr>
+                              @endforeach
+                              @else
+                              <tr>
+                                <td colspan="5" class="text-center">{{__('expenses.expense-table.empty')}}</td>
+                              </tr>
+                              @endif
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+            </div>
+        </div>
+        
+
+  <!-- footer -->
+</div>
+</div>
+  @include('includes/footer')
+
+
+    <!-- view edit modal -->
+    <div class="modal fade" id="update" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="update-form"></div>
+      </div>
+    </div>
+
+
+    <!-- scripts -->
+    <!-- <script src="assets/js/jquery-3.2.1.min.js"></script> -->
+    <script src="{{ url('') }}lang/{{env('APP_LOCALE_DEFAULT')}}/simcify-lang2.js"></script> <!-- js language translation -->
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="//cdn.datatables.net/buttons/1.4.2/js/buttons.flash.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+    <script src="//cdn.datatables.net/buttons/1.4.2/js/buttons.html5.min.js"></script>
+    <script src="//cdn.datatables.net/buttons/1.4.2/js/buttons.print.min.js"></script>
+    <script src="{{asset('assets/libs/bootstrap/js/bootstrap.min.js')}}"></script>
+    <script src="{{asset('assets/js//jquery.slimscroll.min.js')}}"></script>
+    <script src="{{asset('assets/js/simcify.min.js')}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.10.22/sorting/datetime-moment.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.10.22/sorting/currency.js"></script>
+    <!-- custom scripts -->
+    <script src="{{asset('assets/js/app.js')}}"></script>
+    <script src="{{ url('') }}lang/{{env('APP_LOCALE_DEFAULT')}}/lang2.js"></script> <!-- js language translation -->
+    <script>
+        $(document).ready(function() {
+            $.fn.dataTable.moment("MMM DD, YYYY");
+            $('#datatable').DataTable({
+                dom: 'Bfrtip',
+                columnDefs: [
+                  { type: 'currency', targets: 2 }
+                ],
+                order: [[ 1, 'desc']],
+                buttons: [{
+                extend: 'excelHtml5',
+                exportOptions: {
+                    columns: [ 0, 1, 2 ],
+                },
+            },
+            {
+                extend: 'pdfHtml5',
+                exportOptions: {
+                    columns: [ 0, 1, 2 ],
+                    stripNewlines: false,
+                    },
+                    customize : function(doc) {
+                        doc.content[1].table.widths = [ '60%', '20%', '20%',];
+                    }
+            }
+                ],
+                language: {
+                    url: '{{ url('') }}lang/{{env('APP_LOCALE_DEFAULT')}}/table_lang1.json'
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

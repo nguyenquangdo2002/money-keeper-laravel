@@ -1,0 +1,61 @@
+<div class="modal-content">
+   <div class="modal-header">
+      <h4 class="modal-title">Tất toán</h4>
+   </div>
+      <form class="simcy-form" action="{{ url('sotietkiem1@tattoanluon') }}" data-parsley-validate method="POST" loader="true">
+   <div class="modal-body">
+       <div class="form-group">
+           <div class="row">
+               <div class="col-md-12">
+                   <label>{{__('sotietkiem1.income-form.label.amount')}}</label>
+                   <span class="form-control prefix" style="line-height: 2;">{{$totals}}</span>
+                   <input type="hidden" name="sotietkiemid" value="{{$sotietkiem->id}}" />
+                   <input type="hidden" name="accountid" value="{{$account->id}}" />
+               </div>
+           </div>
+       </div>
+       
+       <div class="form-group">
+        <div class="row">
+           <div class="col-md-12">
+              <label>{{__('income.income-form.label.account')}}</label>
+              <select class="form-control select2" name="account">
+                 <option value="0" @if($sotietkiem->account == '0') selected @endif>
+                    {{__('income.income-form.account.other')}}</option>
+                @if(!empty($accounts))
+                @foreach($accounts as $account)
+                 <option value="{{ $account->id }}" @if( $sotietkiem->account == $account->id ) selected @endif>{{ $account->name }}</option>
+                @endforeach
+                @endif
+              </select>
+           </div>
+        </div>
+     </div>
+     <div class="form-group">
+        <div class="row">
+           <div class="col-md-12">
+              <label>Tổng số tiền của tài khoản sau khi tất toán</label>
+              <select class="form-control select2" name="balance">
+                @if(!empty($accounts))
+                @foreach($accounts as $account)
+                 <option value="{{ $account->id }}" @if( $sotietkiem->account == $account->id ) selected @endif>{{ $account->balance + $totals }}</option>
+                @endforeach
+                @endif
+              </select>
+           </div>
+        </div>
+     </div>
+   <div class="modal-footer">
+   <button type="button" class="btn btn-default" data-dismiss="modal">{{__('expenses.button.close')}}</button>
+   <button id="hoan-thanh-btn" class="btn btn-primary">Hoàn thành</button>
+   </div>
+   </form>
+</div>
+<!-- <script type="text/javascript">
+   $('.datepicker-dynamic').datepicker({
+          autoclose: true
+      });
+</script> -->
+<!-- Đoạn mã HTML cho danh sách sổ tất toán -->
+
+

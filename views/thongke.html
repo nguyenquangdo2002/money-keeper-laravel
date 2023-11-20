@@ -1,0 +1,364 @@
+@include('includes/header')
+
+<body>
+    @include('includes/navbar')
+    <!-- Main content -->
+    <div class="container">
+        <div class="page-heading">
+
+       <!--
+        Display the error message when logged in user as superadmin
+        version doesn't match
+        -->
+        @if ( ($user->role == "admin") && env("APP_VERSION") != "1.3" )
+            <div class="alert alert-danger" role="alert">
+                <b>ERROR: Your database isn't up to date.</b><br/>Please go to the <a href="{{ url('Update@get') }}">update</a> page to upgrade your database.</b><br/>
+            </div>
+            <br/>
+        @endif
+
+
+            
+            <div class="heading-content">
+                <div class="user-image">
+                @if(empty($user->avatar))
+                <img src="{{ asset('assets/images/avatar.png') }}" class="img-circle img-responsive">
+                @else
+                <img src="{{ asset('uploads/avatar/'.$user->avatar) }}" class="img-circle img-responsive">
+                @endif
+            </div>
+            <div class="heading-title">
+                <h2>{{__('overview.heading.welcome')}}, {{$user->fname}} {{$user->lname}}</h2>
+                    <p>{{__('overview.heading.intro')}}</p>
+                </div>
+            </div>
+        </div>
+
+        
+
+        <div class="row" id="range">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="reportrange" id="reportrange" name="reportrange">
+                            <i class="mdi mdi-calendar-text"></i>&nbsp;
+                            <span></span>
+                            <i class="mdi mdi-menu-down-outline"></i>
+                        </div>
+                        <h4><span class="reports-title">{{__('overview.graph.activities')}}</span> {{__('overview.graph.last-30-days')}}</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 figure-stats">
+                                <div class="figure-section">
+                                    <p>{{__('overview.graph.total-income')}}</p>
+                                    <span class="badge badge-primary pull-right income-count" data-toggle="tooltip" data-original-title="{{__('overview.graph.transactions')}}">{{ $reports['income']['count'] }} {{__('overview.graph.trns')}}</span>
+                                    <h2 class="text-primary reports-income">{{ $reports['income']['total'] }}</h2>
+                                </div>
+                                <div class="figure-section">
+                                    <p>{{__('overview.graph.total-expenses')}}</p>
+                                    <span class="badge badge-danger pull-right expenses-count" data-toggle="tooltip" data-original-title="{{__('overview.graph.transactions')}}">{{ $reports['expenses']['count'] }} {{__('overview.graph.trns')}}</span>
+                                    <h2 class="text-danger reports-expenses">{{ $reports['expenses']['total'] }}</h2>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <div id="monthly" style="height: 379px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" id="range">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 figure-stats">
+                                <div class="figure-section">
+                                    <span class="pull-right text-primary">{{__('overview.graph.amount')}}</span>
+                                    <p>{{__('overview.graph.list-expenses')}}</p>
+                                    <table>
+                                        <tbody class="top-expenses">
+                                            @if (!empty($reports['expenses']))
+                                            @foreach($reports['expenses'] as $expense)
+                                              <tr>
+                                                <td>{{ $expense->title }}</td>
+                                                <td class="text-right">{{ $expense->amount }}</td>
+                                              </tr>
+                                            @endforeach
+                                            @else
+                                              <tr>
+                                                <td class="text-center">{{__('overview.graph.empty')}}</td>
+                                              </tr>
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-6 figure-stats">
+                                <div class="figure-section">
+                                    <span class="pull-right text-primary">{{__('overview.graph.amount')}}</span>
+                                    <p>{{__('overview.graph.list-incomes')}}</p>
+                                    <table>
+                                        <tbody class="top-incomes">
+                                            @if (!empty($reports['incomes']['top']))
+                                            @foreach($reports['incomes']['top'] as $topIncome)
+                                              <tr>
+                                                <td>{{ $topIncome->title }}</td>
+                                                <td class="text-right">{{ $topIncome->amount }}</td>
+                                              </tr>
+                                            @endforeach
+                                            @else
+                                              <tr>
+                                                <td class="text-center">{{__('overview.graph.empty')}}</td>
+                                              </tr>
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row overview-widgets ">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>{{__('overview.info-box.transactions')}}</h4>
+                    </div>
+                    <div class="card-body overflow">
+                        <div class="transaction-amount">
+                            <!-- item -->
+                            <div class="transaction-amount-item">
+                                <div class="transaction-icon">
+                                    <i class="mdi mdi-checkbox-blank-circle text-primary"></i>
+                                </div>
+                                <div class="transaction-info">
+                                    <strong>{{ money($stats['income']) }}</strong>
+                                    <span>{{__('overview.info-box.income')}}</span>
+                                </div>
+                            </div>
+                            <!-- item -->
+                            <div class="transaction-amount-item">
+                                <div class="transaction-icon">
+                                    <i class="mdi mdi-checkbox-blank-circle text-danger"></i>
+                                </div>
+                                <div class="transaction-info">
+                                    <strong>{{ money($stats['expenses']) }}</strong>
+                                    <span>{{__('overview.info-box.expenses')}}</span>
+                                </div>
+                            </div>
+                            <!-- item -->
+                            <div class="transaction-amount-item">
+                                <div class="transaction-icon">
+                                    <i class="mdi mdi-checkbox-blank-circle text-info"></i>
+                                </div>
+                                <div class="transaction-info">
+                                    <strong>{{ money($stats['savings']) }}</strong>
+                                    <span>{{__('overview.info-box.savings')}}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="transaction-visual">
+                            <div id="transactions" style="height: 200px"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- <div class="row">
+            <div class="col-md-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <button class="btn btn-primary pull-right ml-5" type="button" data-toggle="modal" data-target="#create"><span><i class="mdi mdi-plus-circle-outline"></i></span>{{__('overview.button.add-account')}}</button>
+                        <h4>{{__('overview.accounts-table.accounts')}}</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive longer">
+                            <table class="table display" id="datatable">
+                                <tbody>
+                                    @if(!empty($accounts))
+                                    @foreach($accounts as $account)
+                                    <tr>
+                                        <td class="text-center">
+                                            <div class="icon-account"><i class="mdi mdi-briefcase"></i></div>
+                                        </td>
+                                        <td><strong>{{ $account->name }}</strong>
+                                            <br><span>
+                                                @if($account->type == 'Cash')
+                                                    {{__('overview.accounts-form.types.cash')}}
+                                                @elseif($account->type == 'Bank')
+                                                    {{__('overview.accounts-form.types.bank')}}
+                                                @elseif($account->type == 'Card')
+                                                    {{__('overview.accounts-form.types.card')}}
+                                                @elseif($account->type == 'E-Wallet')
+                                                    {{__('overview.accounts-form.types.ewallet')}}
+                                                @elseif($account->type == 'Other')
+                                                    {{__('overview.accounts-form.types.other')}}
+                                                @else
+                                                    {{ $account->type }}
+                                                @endif
+                                            </span></td>
+                                        <td><strong>{{ money($account->balance) }}</strong>
+                                            <br><span>{{__('overview.accounts-table.balance')}}</span></td>
+                                        <td><strong>{{ $account->transactions }}</strong>
+                                            <br><span>{{__('overview.accounts-table.transactions')}}</span></td>
+                                        <td><strong>{{ date('M d, Y', strtotime($account->updated_at)) }}</strong>
+                                            <br><span>{{__('overview.accounts-table.updated-on')}}</span></td>
+                                        <td>
+                                            @if($account->status == 'Active')
+                                            <strong class="text-primary"><i class="mdi mdi-checkbox-blank-circle"></i> {{__('overview.accounts-table.active')}}</strong>
+                                            @else
+                                            <strong class="text-danger"><i class="mdi mdi-checkbox-blank-circle"></i> {{__('overview.accounts-table.inactive')}}</strong>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{__('overview.accounts-table.actions')}}<span class="caret"></span> </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="c-dropdown__item dropdown-item fetch-display-click" url="{{url('Overview@updateaccountview')}}" data="csrf-token:{{csrf_token()}}|accountid:{{$account->id}}" holder=".update-form" modal="#update" href=""><i class="mdi mdi-pencil"></i> {{__('overview.accounts-table.edit')}}</a></li>
+                                                    <li><a class="send-to-server-click" data="csrf-token:{{csrf_token()}}|accountid:{{$account->id}}" url="{{ url('Overview@deleteaccount') }}" warning-title="{{__('overview.messages.are-you-sure')}}" warning-message="{{__('overview.messages.delete')}}" warning-button="{{__('overview.messages.continue')}}" loader="true"><i class="mdi mdi-delete"></i> {{__('overview.accounts-table.delete')}}</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                    @else
+                                    <tr>
+                                        <td colspan="7" class="text-center">{{__('overview.graph.empty')}}</td>
+                                    </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- footer -->
+        
+
+    </div>
+@include('includes/footer')
+    <!--Add Account-->
+    <div class="modal fade" id="create" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{__('overview.accounts-form.add-title')}}</h4>
+                </div>
+                <form class="simcy-form" action="{{ url('Overview@createaccount') }}" data-parsley-validate="" loader="true" method="POST" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <p>{{__('overview.accounts-form.add-intro')}}</p>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('overview.accounts-form.label.name')}}</label>
+                                    <input type="text" class="form-control" name="name" placeholder="{{__('overview.accounts-form.placeholder.name')}}" required="">
+                                    <input type="hidden" name="csrf-token" value="{{csrf_token()}}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('overview.accounts-form.label.balance')}}</label>
+                                    <span class="input-prefix">{{ currency() }}</span>
+                                    <input type="number" class="form-control prefix" step="0.01" data-parsley-pattern="^[+-]?[0-9]*\.[0-9]{2}$" name="balance" placeholder="{{__('overview.accounts-form.placeholder.balance')}}" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>{{__('overview.accounts-form.label.type')}}</label>
+                                    <select class="form-control select2" name="type">
+                                        <option value="Cash">{{__('overview.accounts-form.types.cash')}}</option>
+                                        <option value="Bank">{{__('overview.accounts-form.types.bank')}}</option>
+                                        <option value="Card">{{__('overview.accounts-form.types.card')}}</option>
+                                        <option value="E-Wallet">{{__('overview.accounts-form.types.ewallet')}}</option>
+                                        <option value="Other">{{__('overview.accounts-form.types.other')}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12 ">
+                                    <label>{{__('overview.accounts-form.label.status')}}</label>
+                                    <select class="form-control select2" name="status">
+                                        <option value="Active">{{__('overview.accounts-form.status.active')}}</option>
+                                        <option value="Inactive">{{__('overview.accounts-form.status.inactive')}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">{{__('overview.button.close')}}</button>
+                        <button type="submit" class="btn btn-primary">{{__('overview.button.add-account')}}</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+        <!-- view edit modal -->
+    <div class="modal fade" id="update" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="update-form"></div>
+      </div>
+    </div>
+    <!-- scripts -->
+    <script src="{{ url('') }}lang/{{env('APP_LOCALE_DEFAULT')}}/simcify-lang2.js"></script> <!-- js language translation -->
+    <script src="{{ asset('assets/js/jquery-3.2.1.min.js') }}"></script>
+    <script src="{{ asset('assets/js/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/daterangepicker/daterangepicker.js') }}"></script>
+    <script src="{{ asset('assets/js//jquery.slimscroll.min.js') }}"></script>
+    <script src="{{ asset('assets/js/simcify.min.js') }}"></script>
+    <script src="{{ asset('assets/js/echarts.min.js') }}"></script>
+    <!-- custom scripts -->
+    <script src="{{ asset('assets/js/overview6.js') }}"></script>
+    <script src="{{ asset('assets/js/app.js') }}"></script>
+    <script src="{{ url('') }}lang/{{env('APP_LOCALE_DEFAULT')}}/lang2.js"></script> <!-- js language translation -->
+    <script type="text/javascript">
+
+        // doughnut
+        var totalIncome = {{ $stats['income'] }},
+            totalExpenses = {{ $stats['expenses'] }},
+            totalSavings = {{ $stats['savings'] }},
+            currency = "{{ currency() }}",
+            reportsUrl = "{{ url('Overview@getreports') }}",
+            expense_title = "{{__('overview.info-box.expenses')}}",
+            income_title = "{{__('overview.info-box.income')}}";
+        //Date range labels
+        var today = "{{__('overview.date-range-label.today')}}",
+            yesterday = "{{__('overview.date-range-label.yesterday')}}",
+            last_7_days = "{{__('overview.date-range-label.last-7-days')}}",
+            last_30_days = "{{__('overview.date-range-label.last-30-days')}}",
+            this_month = "{{__('overview.date-range-label.this-month')}}",
+            last_month = "{{__('overview.date-range-label.last-month')}}",
+            custom_range = "{{__('overview.date-range-label.custom-range')}}",
+            apply = "{{__('overview.date-range-label.apply')}}",
+            cancel = "{{__('overview.date-range-label.cancel')}}";
+
+      // graph
+      var labels = ["{{ implode('", "', $reports['chart']['label']) }}"];
+      var income = [{{ implode(', ', $reports['chart']['income']) }}];
+      var expenses = [{{ implode(', ', $reports['chart']['expenses']) }}];
+
+    </script>
+</body>
+
+</html>
